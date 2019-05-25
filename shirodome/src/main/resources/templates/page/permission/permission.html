@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>权限管理</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link type="text/css" rel="stylesheet" href="/css/bootstrap.css">
+<script type="text/javascript" src="/js/jquery-3.4.0.min.js"></script>
+<script type="text/javascript" src="/js/jquery.serializejson.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+        
+	     <div class="text-right" th:each="button : ${buttons}">
+			<a th:if="${button.type==1}" href="/permission/reinsert" class="btn btn-success">新增</a>
+		</div>
+		<table class="table table-bordered">
+			<tr>
+				<td>权限名</td>
+				<td>资源路径</td>
+				<td>权限菜单</td>
+				<td>按钮</td>
+				<td>操作</td>
+			</tr>
+			<tr th:each="permission: ${perlist}">
+				<td th:text="${permission.name}"></td>
+				<td th:text="${permission.resource}"></td>
+				<td>
+				<select>
+				  <option value ="1" th:selected="${permission.level==1}">一级菜单</option>
+				  <option value ="2" th:selected="${permission.level==2}">二级菜单</option>
+				  <option value="3"  th:selected="${permission.level==3}">按钮</option>
+				</select>
+				</td>
+				<td>
+				<select>
+				  <option value ="0" th:selected="${permission.type==0}">菜单按钮</option>
+				  <option value ="1" th:selected="${permission.type==1}">新增按钮</option>
+				  <option value ="2" th:selected="${permission.type==2}">更新按钮</option>
+				  <option value="4"  th:selected="${permission.type==4}">删除按钮</option>
+				</select>
+				</td >
+				 <td >
+				 <span th:each="buttons: ${buttons}">
+					<a class="btn btn-warning" th:if="${buttons.type==2}"  th:href="|/permission/repupdate?pid=${permission.pid}|" th:text="${buttons.name}"></a>
+					<a class="btn btn-danger"  th:if="${buttons.type==4}" 
+                        onclick="if(confirm('确定删除?')==false){return false;}"  th:href="|/permission/delete?pid=${permission.pid}|"   th:text="${buttons.name}"></a>
+				</span>
+				</td>
+			</tr>
+		</table>
+		<ul class="pager">
+			<li>总共<span th:text="${page.count}"></span>条数据
+			</li>
+			<li>总共<span id="pageCount" th:text="${page.pageCount}"></span>页
+			</li>
+			<li>当前是第<span id="pageIndex" th:text="${page.pageIndex}"></span>页
+			</li>
+			 <li><a href="javascript:" onclick="prePage()">上一页</a></li>
+			<li><a href="javascript:" onclick="nextPage()">下一页</a></li> 
+		</ul>
+	</div>
+	<script th:inline="javascript">
+	    var pageIndex=[[${page.pageIndex}]];
+		var pageCount=[[${page.pageCount}]];
+		var pid= [[${pid}]];
+		function nextPage(){
+			if(pageIndex<pageCount){
+				location.href="/permission/permission?pageIndex="+(pageIndex+1)+"&pid="+pid;
+			}
+		}
+		function prePage(){
+			if(pageIndex>1){
+				location.href="/permission/permission?pageIndex="+(pageIndex-1)+"&pid="+pid;
+			}
+		}
+
+	
+	</script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>用户角色</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link type="text/css" rel="stylesheet" href="/css/bootstrap.css">
+<script type="text/javascript" src="/js/jquery-3.4.0.min.js"></script>
+<script type="text/javascript" src="/js/jquery.serializejson.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div style="border: 1px solid #ccc; height: 500px">
+			<div class="col-sm-2" style="overflow: hidden;">
+				<div style="width: 121px; height: 500px; overflow: auto">
+					<h4>角色列表</h4>
+					<ul class="list-unstyled" th:each="role:${roles}">
+						<li><a th:href="|/rp/rp?pid=${pid}&rid=${role.rid}|"
+							th:text="${role.name}"></a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="col-sm-10"
+				style="padding: 0px; border-left: 1px solid #ccc">
+				<form action="/rp/save" method="post">
+					<div style="height: 439px; border-bottom: 1px solid #ccc">
+						<h4>角色权限</h4>
+						<input type="hidden" th:value="${rid}" name="rid">
+						<div th:each="level1:${permissionList}">
+							<!--一个一级菜单下的所有权限-->
+							<div>
+								<div>
+									<input parentId="0" type="checkbox" name="pid" th:value="${level1.pid}"><span
+										class="text-danger" th:text="${level1.name}" style="font-size:16px;font-weight:bold"></span>
+								</div>
+								<div th:each="level2:${level1.childs}">
+									<!--二级菜单-->
+									<div>
+										<div class="col-sm-2 col-sm-offset-1">
+											<input th:parentId="${level2.parentId}" type="checkbox" name="pid" th:value="${level2.pid}"><span
+												class="text-warning" th:text="${level2.name}" style="font-size:14px;font-weight:bold"></span>
+										</div>
+										<div class="col-sm-9">
+											<div class="col-sm-4" th:each="level3:${level2.childs}">
+												<input th:parentId="${level3.parentId}" type="checkbox" name="pid" th:value="${level3.pid}">
+												<span class="text-success" th:text="${level3.name}" style="font-size:12px"></span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<div style="height: 50px; padding-right: 10px" class="text-right">
+						<input type="submit" th:if="${buttons.size()>0}"
+							class="btn btn-success" value="保存">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<script th:inline="javascript">
+		var rps=[[${rps}]];
+		var permissions=[[${permissionList}]];
+		window.onload=function(){
+			if(rps!=null){
+        		for(var i=0;i<rps.length;i++){
+            		$("input[value="+rps[i].pid+"]").prop("checked",true);
+            	}
+        	}
+			if(permissions!=null){
+				$("input[type='checkbox']").change(function(){
+					if($(this).prop("checked")==true){
+						if($(this).attr("parentId")=="0"){
+							$("[parentId='"+$(this).val()+"']").prop("checked",true);
+							$("[parentId='"+$(this).val()+"']").change();
+						}
+						if($(this).attr("parentId")!="0"){
+							$("[parentId='"+$(this).val()+"']").prop("checked",true);
+							$("input[value="+$(this).attr("parentId")+"]").prop("checked",true);
+						}
+					}else{
+						if($(this).attr("parentId")=="0"){
+							$("[parentId='"+$(this).val()+"']").prop("checked",false);
+							$("[parentId='"+$(this).val()+"']").change();
+						}
+						if($(this).attr("parentId")!="0"){
+							$("[parentId='"+$(this).val()+"']").prop("checked",false);
+							if($("[parentId='"+$(this).attr("parentId")+"']:checked").length==0){
+								$("input[value="+$(this).attr("parentId")+"]").prop("checked",false);
+							} 
+						}
+					}
+				});
+			}
+		}
+		
+	</script>
+</body>
+</html>

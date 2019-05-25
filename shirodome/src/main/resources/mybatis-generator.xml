@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+	<!--为插件提供数据库驱动包 -->
+	<classPathEntry location="D://mysql-connector-java-5.1.47.jar" />
+	<!--MyBatis3表示当前mybatis的版本 -->
+	<context id="DB2Tables" targetRuntime="MyBatis3">
+		<commentGenerator>
+			<!-- 是否去除自动生成的注释 true：是 ： false:否 -->
+			<property name="suppressAllComments" value="true" />
+		</commentGenerator>
+
+		<!--连接数据库的信息 -->
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://localhost:3306/manage" userId="root"
+			password="123456">
+		</jdbcConnection>
+		<!--禁止将int类型反向生成为BigDecimal类型 -->
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+		<!--实体类生成配置 -->
+		<javaModelGenerator targetPackage="com.woniu.entity"
+			targetProject="shirodome/src/main/java">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+		<!--映射文件生成器 -->
+		<sqlMapGenerator targetPackage="mapper"
+			targetProject="shirodome/src/main/resources">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+		<!--查询接口生成器 -->
+		<javaClientGenerator type="XMLMAPPER"
+			targetPackage="com.woniu.mapper" targetProject="shirodome/src/main/java">
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+
+		<!--那些表需要进行反向工程，使用table标签来说明 -->
+		<table tableName="USER" domainObjectName="User"></table>
+		<table tableName="USERROLE" domainObjectName="UserRole"></table>
+		<table tableName="ROLE" domainObjectName="Role"></table>
+		<table tableName="PERMISSION" domainObjectName="Permission"></table>
+		<table tableName="RP" domainObjectName="RP"></table>
+	</context>
+</generatorConfiguration>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>新增</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link type="text/css" rel="stylesheet" href="/css/bootstrap.css">
+<script type="text/javascript" src="/js/jquery-3.4.0.min.js"></script>
+<script type="text/javascript" src="/js/jquery.serializejson.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+</head>
+<style>
+	.error{
+		height:36px;
+		width:100px;
+		line-height:35px;
+		display:none;
+	}
+</style>
+<body>
+	<div class="container" style="margin-top:8%">
+		<form class="form-horizontal" action="/permission/update"  method="post">
+			<div class="form-group">
+				<label class="control-label col-sm-2" >权限名称</label> 
+				<div class="col-sm-8" >
+					<input class="form-control" type="text" id="name" name="name" th:value="${permission.name}">
+				</div>
+				<input type="hidden" name="pid" th:value="${pid}">
+				<span class="col-sm-1 label label-danger error" ></span>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-2" >权限资源地址</label> 
+				<div class="col-sm-8">
+					<input class="form-control" type="text" id="resource" name="resource" th:value="${permission.resource}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-2" >父级菜单</label> 
+				<div class="col-sm-8">
+					<select class="form-control" name="parentId">
+						<option th:selected="${permission.parentId==0}" value="0">请选择父级菜单</option>
+						<div th:each="level1:${menus}">
+							<option th:selected="${permission.parentId==level1.pid}" th:value="${level1.pid}" th:text="${level1.name}"></option>
+								<div th:each="level2,index:${level1.childs}">
+									<option th:selected="${permission.parentId==level2.pid}" th:if="${index.last!=true}" th:value="${level2.pid}" th:utext="|&nbsp;&nbsp;${level2.name}|"></option>
+									<option  th:selected="${permission.parentId==level2.pid}" th:if="${index.last==true}" th:value="${level2.pid}" th:utext="|&nbsp;&nbsp;${level2.name}|"></option>
+								</div>
+						</div>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-2" >权限等级</label> 
+				<div class="col-sm-8">
+					<select class="form-control" name="level">
+						<option th:selected="${permission.level==1}" value="1">一级菜单</option>
+						<option th:selected="${permission.level==2}" value="2">二级菜单</option>
+						<option th:selected="${permission.level==3}" value="3">按钮</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-2" >权限类型</label> 
+				<div class="col-sm-8">
+					<select class="form-control" name="type">
+						<option th:selected="${permission.type==0}" value="0">菜单</option>
+						<option th:selected="${permission.type==1}" value="1">新增</option>
+						<option th:selected="${permission.type==2}" value="2">更新</option>
+						<option th:selected="${permission.type==4}" value="4">删除</option>
+					</select>
+				</div>
+			</div>
+			<br/>
+			<br/>
+			<br/>
+			<br/>
+			<div class="form-group">
+				<input style="text-align:center;font-size:20px" class="control-label btn btn-success col-sm-2 col-sm-offset-8 text-center" type="submit" value="更新"/>
+			</div>
+		</form>
+	</div>
+	<script>
+		function code(){
+			if($("#name").val()=="")
+				{
+					$(".error").html("请输入权限名称！");
+					$(".error").css("display","block");
+					return false;
+				}
+					$(".error").html("");
+					$(".error").css("display","none");
+					return true;
+		}
+	</script>
+</body>
+
+</html>
